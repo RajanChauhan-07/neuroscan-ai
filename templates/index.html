@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NeuroScan AI — Alzheimer's Clinical Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <div class="nav-logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="nav-title">NeuroScan <em>AI</em></span>
+      </div>
+      <div class="nav-badge">Clinical Research Tool</div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">Powered by EfficientNetB3 + XGBoost</div>
+      <h1 class="hero-title">
+        Alzheimer's<br/>
+        <em>Diagnostic Intelligence</em>
+      </h1>
+      <p class="hero-sub">Upload an MRI scan and enter patient clinical data to receive an AI-assisted diagnosis with stage classification and progression risk analysis.</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">99.82%</span><span class="stat-label">MRI Accuracy</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><span class="stat-num">94.88%</span><span class="stat-label">Risk Accuracy</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><span class="stat-num">44,000</span><span class="stat-label">MRIs Trained</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Form -->
+  <main class="main">
+    <form id="analysisForm" enctype="multipart/form-data">
+
+      <!-- Step 1: MRI Upload -->
+      <section class="card" id="step1">
+        <div class="card-header">
+          <div class="step-badge">01</div>
+          <div>
+            <h2 class="card-title">MRI Scan Upload</h2>
+            <p class="card-sub">Upload the patient's brain MRI in JPG or PNG format</p>
+          </div>
+        </div>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="mriInput" name="mri" accept="image/*" required hidden/>
+          <div class="upload-content" id="uploadContent">
+            <div class="upload-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <p class="upload-text">Drop MRI scan here or <span class="upload-link">browse files</span></p>
+            <p class="upload-hint">JPG, PNG — Max 10MB</p>
+          </div>
+          <div class="upload-preview" id="uploadPreview" style="display:none">
+            <img id="previewImg" src="" alt="MRI Preview"/>
+            <div class="preview-info">
+              <span class="preview-name" id="previewName"></span>
+              <span class="preview-change">Change file</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 2: Patient Data -->
+      <section class="card" id="step2">
+        <div class="card-header">
+          <div class="step-badge">02</div>
+          <div>
+            <h2 class="card-title">Patient Clinical Data</h2>
+            <p class="card-sub">Enter the patient's demographic and health metrics</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+
+          <!-- Demographics -->
+          <div class="form-group-title">Demographics</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Age</label>
+              <input type="number" name="age" placeholder="e.g. 72" min="50" max="100"/>
+            </div>
+            <div class="field">
+              <label>Gender</label>
+              <select name="gender">
+                <option value="0">Male</option>
+                <option value="1">Female</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Ethnicity</label>
+              <select name="ethnicity">
+                <option value="0">Caucasian</option>
+                <option value="1">African American</option>
+                <option value="2">Asian</option>
+                <option value="3">Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Education Level</label>
+              <select name="education">
+                <option value="0">None</option>
+                <option value="1">High School</option>
+                <option value="2">Bachelor's</option>
+                <option value="3">Higher</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Vitals -->
+          <div class="form-group-title">Vitals & Lifestyle</div>
+          <div class="field-row">
+            <div class="field">
+              <label>BMI</label>
+              <input type="number" name="bmi" placeholder="e.g. 27.5" step="0.1"/>
+            </div>
+            <div class="field">
+              <label>Systolic BP</label>
+              <input type="number" name="systolic_bp" placeholder="e.g. 130"/>
+            </div>
+            <div class="field">
+              <label>Diastolic BP</label>
+              <input type="number" name="diastolic_bp" placeholder="e.g. 85"/>
+            </div>
+            <div class="field">
+              <label>MMSE Score <span class="field-hint">(0–30)</span></label>
+              <input type="number" name="mmse" placeholder="e.g. 24" min="0" max="30"/>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Physical Activity <span class="field-hint">(hrs/week)</span></label>
+              <input type="number" name="physical_activity" placeholder="e.g. 4.5" step="0.1"/>
+            </div>
+            <div class="field">
+              <label>Diet Quality <span class="field-hint">(0–10)</span></label>
+              <input type="number" name="diet_quality" placeholder="e.g. 6.5" step="0.1"/>
+            </div>
+            <div class="field">
+              <label>Sleep Quality <span class="field-hint">(0–10)</span></label>
+              <input type="number" name="sleep_quality" placeholder="e.g. 7" step="0.1"/>
+            </div>
+            <div class="field">
+              <label>ADL Score <span class="field-hint">(0–10)</span></label>
+              <input type="number" name="adl" placeholder="e.g. 8" step="0.1"/>
+            </div>
+          </div>
+
+          <!-- Cholesterol -->
+          <div class="form-group-title">Cholesterol Panel</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Total Cholesterol</label>
+              <input type="number" name="cholesterol_total" placeholder="e.g. 200"/>
+            </div>
+            <div class="field">
+              <label>LDL</label>
+              <input type="number" name="cholesterol_ldl" placeholder="e.g. 120"/>
+            </div>
+            <div class="field">
+              <label>HDL</label>
+              <input type="number" name="cholesterol_hdl" placeholder="e.g. 55"/>
+            </div>
+            <div class="field">
+              <label>Triglycerides</label>
+              <input type="number" name="cholesterol_trig" placeholder="e.g. 150"/>
+            </div>
+          </div>
+
+          <!-- Functional -->
+          <div class="form-group-title">Functional Assessment</div>
+          <div class="field-row">
+            <div class="field">
+              <label>Functional Assessment <span class="field-hint">(0–10)</span></label>
+              <input type="number" name="functional_assessment" placeholder="e.g. 7" step="0.1"/>
+            </div>
+            <div class="field">
+              <label>Alcohol Consumption</label>
+              <input type="number" name="alcohol" placeholder="e.g. 5" step="0.1"/>
+            </div>
+          </div>
+
+          <!-- Medical History -->
+          <div class="form-group-title">Medical History</div>
+          <div class="toggle-grid">
+            <label class="toggle-field">
+              <input type="checkbox" name="smoking" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Smoking</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="family_history" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Family History of Alzheimer's</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="cardiovascular" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Cardiovascular Disease</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="diabetes" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Diabetes</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="depression" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Depression</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="head_injury" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Head Injury</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="hypertension" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Hypertension</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="memory_complaints" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Memory Complaints</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="behavioral_problems" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Behavioral Problems</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="confusion" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Confusion</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="disorientation" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Disorientation</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="personality_changes" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Personality Changes</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="difficulty_tasks" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Difficulty with Tasks</span>
+              </div>
+            </label>
+            <label class="toggle-field">
+              <input type="checkbox" name="forgetfulness" value="1"/>
+              <div class="toggle-box">
+                <span class="toggle-label">Forgetfulness</span>
+              </div>
+            </label>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Submit -->
+      <div class="submit-row">
+        <button type="submit" class="btn-analyze" id="submitBtn">
+          <span class="btn-text">Run AI Analysis</span>
+          <span class="btn-icon">→</span>
+        </button>
+      </div>
+
+    </form>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay" style="display:none">
+      <div class="loading-card">
+        <div class="loading-brain">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+            <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+          </svg>
+        </div>
+        <p class="loading-title">Analyzing Patient Data</p>
+        <p class="loading-sub">Running MRI classification and risk assessment...</p>
+        <div class="loading-steps">
+          <div class="loading-step active" id="ls1">MRI Stage Classification</div>
+          <div class="loading-step" id="ls2">Clinical Risk Analysis</div>
+          <div class="loading-step" id="ls3">Generating Report</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <section class="results" id="results" style="display:none">
+      <div class="results-header">
+        <h2 class="results-title">Analysis Complete</h2>
+        <p class="results-sub">AI-assisted diagnostic report</p>
+      </div>
+
+      <div class="results-grid">
+
+        <!-- MRI Result -->
+        <div class="result-card" id="mriResult">
+          <div class="result-card-header">
+            <span class="result-label">MRI Analysis</span>
+            <span class="result-badge" id="mriConfidence"></span>
+          </div>
+          <div class="result-stage" id="mriStage"></div>
+          <p class="result-desc" id="mriDesc"></p>
+          <div class="prob-bars" id="probBars"></div>
+        </div>
+
+        <!-- Risk Result -->
+        <div class="result-card" id="riskResult">
+          <div class="result-card-header">
+            <span class="result-label">Progression Risk</span>
+            <span class="result-badge" id="riskLabel"></span>
+          </div>
+          <div class="risk-gauge">
+            <svg viewBox="0 0 200 120" class="gauge-svg">
+              <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="#e5e5ea" stroke-width="16" stroke-linecap="round"/>
+              <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round"
+                    stroke-dasharray="251.2" stroke-dashoffset="251.2" id="gaugeArc" style="transition: stroke-dashoffset 1.5s ease"/>
+              <defs>
+                <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#34C759"/>
+                  <stop offset="50%" stop-color="#FF9F0A"/>
+                  <stop offset="100%" stop-color="#FF3B30"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="gauge-value" id="gaugeValue">0%</div>
+          </div>
+          <p class="result-desc" id="riskDesc"></p>
+        </div>
+
+      </div>
+
+      <!-- Unified Report -->
+      <div class="report-card">
+        <div class="report-header">
+          <div class="report-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10 9 9 9 8 9"/>
+            </svg>
+          </div>
+          <span>Clinical Summary Report</span>
+        </div>
+        <p class="report-text" id="reportText"></p>
+        <div class="report-disclaimer">
+          ⚠️ This tool is for clinical research assistance only. All diagnoses must be confirmed by a licensed neurologist.
+        </div>
+      </div>
+
+      <div class="new-analysis">
+        <button class="btn-new" onclick="resetForm()">New Analysis</button>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>NeuroScan AI — Built for clinical research. Not a substitute for professional medical diagnosis.</p>
+  </footer>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
