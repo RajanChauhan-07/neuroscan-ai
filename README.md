@@ -762,3 +762,12 @@ sudo systemctl restart neuroscan
 ---
 
 > ⚠️ **Disclaimer:** NeuroScan AI is a clinical research tool only. All diagnoses must be confirmed by a licensed neurologist. Not intended for direct patient care decisions.
+> ![WhatsApp Image 2026-03-10 at 05 13 35](https://github.com/user-attachments/assets/84599649-6ac0-4c85-8421-3c3cd6106d32)
+> ![WhatsApp Image 2026-03-10 at 05 13 28](https://github.com/user-attachments/assets/546f140e-6f6a-4af2-be57-e7a1019102db)
+> ![WhatsApp Image 2026-03-10 at 05 13 40](https://github.com/user-attachments/assets/dea0a3d8-aaa1-4d81-bca1-adbabc24f1b7)
+> ![WhatsApp Image 2026-03-10 at 05 13 47](https://github.com/user-attachments/assets/646328f0-cff4-43cd-ab28-122f341171b5)
+> ![WhatsApp Image 2026-03-10 at 05 14 40](https://github.com/user-attachments/assets/79232738-09dd-4bd6-8f6b-56c7792ce19c)
+
+
+
+
