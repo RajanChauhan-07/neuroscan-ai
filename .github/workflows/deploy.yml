@@ -11,14 +11,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          printf '%s' "${{ secrets.EC2_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-
       - name: Deploy to EC2
-        run: |
-          scp -i ~/.ssh/deploy_key application.py ubuntu@${{ secrets.EC2_HOST }}:~/neuroscan/
-          ssh -i ~/.ssh/deploy_key ubuntu@${{ secrets.EC2_HOST }} "cd ~/neuroscan && docker stop neuroscan-app || true && docker rm neuroscan-app || true && docker build -t neuroscan-ai . && docker run -d --name neuroscan-app --restart always -p 8000:8000 neuroscan-ai && echo Done"
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd ~/neuroscan
+            docker stop neuroscan-app || true
+            docker rm neuroscan-app || true
+            docker build -t neuroscan-ai .
+            docker run -d --name neuroscan-app --restart always -p 8000:8000 neuroscan-ai
+            echo "Deployment complete!"
