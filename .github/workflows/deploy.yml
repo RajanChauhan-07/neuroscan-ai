@@ -19,19 +19,5 @@ jobs:
         run: |
           echo "$EC2_KEY" > key.pem
           chmod 400 key.pem
-
-          scp -o StrictHostKeyChecking=no -i key.pem \
-            application.py ubuntu@$EC2_HOST:~/neuroscan/
-
-          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@$EC2_HOST << 'ENDSSH'
-            cd ~/neuroscan
-            docker stop neuroscan-app 2>/dev/null || true
-            docker rm neuroscan-app 2>/dev/null || true
-            docker build -t neuroscan-ai .
-            docker run -d \
-              --name neuroscan-app \
-              --restart always \
-              -p 8000:8000 \
-              neuroscan-ai
-            echo "Deployment complete!"
-ENDSSH
+          scp -o StrictHostKeyChecking=no -i key.pem application.py ubuntu@$EC2_HOST:~/neuroscan/
+          ssh -o StrictHostKeyChecking=no -i key.pem ubuntu@$EC2_HOST "cd ~/neuroscan && docker stop neuroscan-app || true && docker rm neuroscan-app || true && docker build -t neuroscan-ai . && docker run -d --name neuroscan-app --restart always -p 8000:8000 neuroscan-ai && echo Done"
